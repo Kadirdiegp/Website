@@ -28,8 +28,23 @@ const ChatbotButton = styled.button`
   }
 `;
 
-const CloseButton = styled(ChatbotButton)`
+const CloseButton = styled.button`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   background-color: #f44336;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 1010;
+  transition: all 0.3s ease;
   
   &:hover {
     background-color: #d32f2f;
@@ -46,12 +61,15 @@ const ChatbotWrapper = styled.div<{ $isOpen: boolean }>`
   right: 20px;
   width: 400px; 
   height: 600px;
-  background: transparent;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
   z-index: 1000;
   transition: all 0.3s ease;
   opacity: ${props => props.$isOpen ? '1' : '0'};
   visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
   pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   
   @media (max-width: 768px) {
     bottom: 0;
@@ -60,6 +78,7 @@ const ChatbotWrapper = styled.div<{ $isOpen: boolean }>`
     width: 100%;
     height: 85vh;
     max-height: 600px;
+    border-radius: 10px 10px 0 0;
   }
 `;
 
@@ -67,6 +86,7 @@ const IframeContainer = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
+  position: relative;
 `;
 
 const ChatbotWidget: React.FC = () => {
@@ -87,25 +107,19 @@ const ChatbotWidget: React.FC = () => {
 
   // ChatBot-URL je nach Umgebung anpassen
   const getChatbotUrl = () => {
-    // Wir verwenden die HTTPS-Variante um Mixed-Content-Probleme zu vermeiden
-    // Cache-Busting Parameter hinzufügen
-    return `https://kinderschutz-bot.windsurf.build/?embedded=true&transparent=true&noFrame=true&t=${Date.now()}`;
+    // Bild 2 zeigt, dass wir die Header-Leiste beibehalten sollten (nicht transparent)
+    // Wir verwenden embedded=true für das richtige Styling
+    return `https://kinderschutz-bot.windsurf.build/?embedded=true&t=${Date.now()}`;
   };
 
   return (
     <>
-      {!isOpen ? (
+      {!isOpen && (
         <ChatbotButton onClick={toggleChatbot} aria-label="Chat öffnen">
           <ChatbotIcon>
             💬
           </ChatbotIcon>
         </ChatbotButton>
-      ) : (
-        <CloseButton onClick={toggleChatbot} aria-label="Chat schließen">
-          <ChatbotIcon>
-            ✕
-          </ChatbotIcon>
-        </CloseButton>
       )}
       
       <ChatbotWrapper $isOpen={isOpen}>
@@ -124,9 +138,14 @@ const ChatbotWidget: React.FC = () => {
                 width: '100%',
                 height: '100%',
                 display: 'block',
-                backgroundColor: 'transparent'
+                backgroundColor: 'white'
               }}
             />
+            <CloseButton onClick={toggleChatbot} aria-label="Chat schließen">
+              <ChatbotIcon>
+                ✕
+              </ChatbotIcon>
+            </CloseButton>
           </IframeContainer>
         )}
       </ChatbotWrapper>
