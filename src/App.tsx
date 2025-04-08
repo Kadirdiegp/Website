@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import Navbar from './components/Navbar';
@@ -68,6 +68,12 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
   return (
     <Router>
       <GlobalStyle />
@@ -82,26 +88,80 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      <div style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        width: '60px',
-        height: '60px',
-        borderRadius: '50%',
-        backgroundColor: '#8338ec',
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        cursor: 'pointer',
-        zIndex: 1000,
-        fontSize: '24px'
-      }} 
-      onClick={() => window.open("https://chtabot.netlify.app/", "_blank")}>
+      
+      {/* Chat Button */}
+      <div 
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          width: '60px',
+          height: '60px',
+          borderRadius: '50%',
+          backgroundColor: '#8338ec',
+          color: 'white',
+          display: isChatOpen ? 'none' : 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          cursor: 'pointer',
+          zIndex: 1000,
+          fontSize: '24px'
+        }} 
+        onClick={toggleChat}
+      >
         💬
       </div>
+
+      {/* Chat Modal */}
+      {isChatOpen && (
+        <div style={{
+          position: 'fixed',
+          bottom: '90px',
+          right: '20px',
+          width: '400px',
+          height: '600px',
+          backgroundColor: 'white',
+          borderRadius: '10px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+          zIndex: 1000,
+          overflow: 'hidden'
+        }}>
+          <iframe 
+            src="https://chtabot.netlify.app/" 
+            title="Kinderschutzbund Chatbot"
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none'
+            }}
+          />
+          
+          {/* Close Button */}
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              backgroundColor: '#f44336',
+              color: 'white',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+              cursor: 'pointer',
+              zIndex: 1010,
+              fontSize: '20px'
+            }} 
+            onClick={toggleChat}
+          >
+            ✕
+          </div>
+        </div>
+      )}
     </Router>
   );
 }
