@@ -8,7 +8,7 @@ import Services from './pages/Services';
 import Projects from './pages/Projects';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import ChatbotWidget from './components/ChatbotWidget';
+import ChatbotWidgetDirect from './components/ChatbotWidgetDirect';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -83,7 +83,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      <ChatbotWidget />
+      <ChatbotWidgetDirect />
     </Router>
   );
 }
