@@ -8,7 +8,6 @@ import Services from './pages/Services';
 import Projects from './pages/Projects';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import ChatbotWidgetDirect from './components/ChatbotWidgetDirect';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -83,7 +82,26 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      <ChatbotWidgetDirect />
+      <div style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        width: '60px',
+        height: '60px',
+        borderRadius: '50%',
+        backgroundColor: '#8338ec',
+        color: 'white',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        cursor: 'pointer',
+        zIndex: 1000,
+        fontSize: '24px'
+      }} 
+      onClick={() => window.open("https://chtabot.netlify.app/", "_blank")}>
+        💬
+      </div>
     </Router>
   );
 }
