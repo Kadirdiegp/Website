@@ -160,7 +160,11 @@ function App() {
                   right: '0',
                   bottom: '0',
                   width: '100%',
-                  height: '100%',
+                  height: '100vh',
+                  maxWidth: '100%',
+                  maxHeight: '100vh',
+                  margin: '0',
+                  padding: '0',
                   borderRadius: '0',
                 }
               : {
@@ -176,15 +180,29 @@ function App() {
             zIndex: 1000,
             overflow: 'hidden'
           }}>
-            <iframe 
-              src="https://chtabot.netlify.app/" 
-              title="Kinderschutzbund Chatbot"
-              style={{
-                width: '100%',
-                height: '100%',
-                border: 'none'
-              }}
-            />
+            <div style={{ 
+              position: 'relative',
+              width: '100%', 
+              height: '100%',
+              overflow: 'hidden'
+            }}>
+              <iframe 
+                src="https://chtabot.netlify.app/" 
+                title="Kinderschutzbund Chatbot"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  margin: '0',
+                  padding: '0',
+                  position: 'absolute',
+                  top: '0',
+                  left: '0'
+                }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
             
             {/* Close Button */}
             <div 
