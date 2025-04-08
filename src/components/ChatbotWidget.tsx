@@ -73,6 +73,12 @@ const ChatbotWidget: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
+  // ChatBot-URL je nach Umgebung anpassen
+  const getChatbotUrl = () => {
+    // Wir verwenden die HTTPS-Variante um Mixed-Content-Probleme zu vermeiden
+    return 'https://kinderschutz-bot.windsurf.build/?embedded=true&transparent=true&noFrame=true';
+  };
+
   return (
     <>
       {!isOpen ? (
@@ -90,23 +96,26 @@ const ChatbotWidget: React.FC = () => {
       )}
       
       <ChatbotWrapper $isOpen={isOpen}>
-        <IframeContainer>
-          <iframe 
-            src="https://kinderschutz-bot.windsurf.build/?embedded=true&transparent=true&noFrame=true"
-            title="Kinderschutz Chatbot"
-            width="100%"
-            height="100%"
-            frameBorder="0"
-            style={{ 
-              border: 'none',
-              width: '100%',
-              height: '100%',
-              display: 'block',
-              backgroundColor: 'transparent'
-            }}
-            allow="microphone"
-          />
-        </IframeContainer>
+        {isOpen && (
+          <IframeContainer>
+            <iframe 
+              src={getChatbotUrl()}
+              title="Kinderschutz Chatbot"
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              referrerPolicy="origin"
+              allow="microphone"
+              style={{ 
+                border: 'none',
+                width: '100%',
+                height: '100%',
+                display: 'block',
+                backgroundColor: 'transparent'
+              }}
+            />
+          </IframeContainer>
+        )}
       </ChatbotWrapper>
     </>
   );
