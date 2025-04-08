@@ -70,6 +70,7 @@ const GlobalStyle = createGlobalStyle`
 function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [chatKey, setChatKey] = useState(Date.now()); // Eindeutiger Schlüssel für den iFrame
 
   useEffect(() => {
     const checkMobile = () => {
@@ -83,13 +84,20 @@ function App() {
   }, []);
 
   const toggleChat = () => {
-    setIsChatOpen(!isChatOpen);
-    if (!isChatOpen && isMobile) {
-      // Beim Öffnen des Chats auf Mobilgeräten, scrolle nach oben
-      window.scrollTo(0, 0);
-      document.body.style.overflow = 'hidden';
-    } else if (isMobile) {
-      document.body.style.overflow = 'auto';
+    if (!isChatOpen) {
+      // Bei jedem Öffnen neuen Key generieren, um einen frischen iFrame zu erhalten
+      setChatKey(Date.now());
+      setIsChatOpen(true);
+      
+      if (isMobile) {
+        window.scrollTo(0, 0);
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      setIsChatOpen(false);
+      if (isMobile) {
+        document.body.style.overflow = 'auto';
+      }
     }
   };
 
@@ -160,11 +168,7 @@ function App() {
                   right: '0',
                   bottom: '0',
                   width: '100%',
-                  height: '100vh',
-                  maxWidth: '100%',
-                  maxHeight: '100vh',
-                  margin: '0',
-                  padding: '0',
+                  height: '100%',
                   borderRadius: '0',
                 }
               : {
@@ -180,29 +184,18 @@ function App() {
             zIndex: 1000,
             overflow: 'hidden'
           }}>
-            <div style={{ 
-              position: 'relative',
-              width: '100%', 
-              height: '100%',
-              overflow: 'hidden'
-            }}>
-              <iframe 
-                src="https://chtabot.netlify.app/" 
-                title="Kinderschutzbund Chatbot"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none',
-                  margin: '0',
-                  padding: '0',
-                  position: 'absolute',
-                  top: '0',
-                  left: '0'
-                }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
+            <iframe 
+              key={chatKey}
+              src="https://chtabot.netlify.app/" 
+              title="Kinderschutzbund Chatbot"
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none'
+              }}
+              allow="microphone; camera; geolocation"
+              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-top-navigation"
+            />
             
             {/* Close Button */}
             <div 
