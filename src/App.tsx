@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import Navbar from './components/Navbar';
@@ -69,9 +69,28 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
+    if (!isChatOpen && isMobile) {
+      // Beim Öffnen des Chats auf Mobilgeräten, scrolle nach oben
+      window.scrollTo(0, 0);
+      document.body.style.overflow = 'hidden';
+    } else if (isMobile) {
+      document.body.style.overflow = 'auto';
+    }
   };
 
   return (
@@ -115,52 +134,93 @@ function App() {
 
       {/* Chat Modal */}
       {isChatOpen && (
-        <div style={{
-          position: 'fixed',
-          bottom: '90px',
-          right: '20px',
-          width: '400px',
-          height: '600px',
-          backgroundColor: 'white',
-          borderRadius: '10px',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-          zIndex: 1000,
-          overflow: 'hidden'
-        }}>
-          <iframe 
-            src="https://chtabot.netlify.app/" 
-            title="Kinderschutzbund Chatbot"
-            style={{
-              width: '100%',
-              height: '100%',
-              border: 'none'
-            }}
-          />
+        <>
+          {/* Hintergrund-Overlay für Mobile */}
+          {isMobile && (
+            <div 
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                zIndex: 999
+              }}
+              onClick={toggleChat}
+            />
+          )}
           
-          {/* Close Button */}
-          <div 
-            style={{
-              position: 'absolute',
-              bottom: '10px',
-              right: '10px',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: '#f44336',
-              color: 'white',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-              cursor: 'pointer',
-              zIndex: 1010,
-              fontSize: '20px'
-            }} 
-            onClick={toggleChat}
-          >
-            ✕
+          <div style={{
+            position: 'fixed',
+            ...(isMobile 
+              ? {
+                  top: '0',
+                  left: '0',
+                  right: '0',
+                  bottom: '0',
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '0',
+                }
+              : {
+                  bottom: '90px',
+                  right: '20px',
+                  width: '400px',
+                  height: '600px',
+                  borderRadius: '10px',
+                }
+            ),
+            backgroundColor: 'white',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+            zIndex: 1000,
+            overflow: 'hidden'
+          }}>
+            <iframe 
+              src="https://chtabot.netlify.app/" 
+              title="Kinderschutzbund Chatbot"
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none'
+              }}
+            />
+            
+            {/* Close Button */}
+            <div 
+              style={{
+                position: 'absolute',
+                ...(isMobile
+                  ? {
+                      top: '15px',
+                      right: '15px',
+                      width: '50px',
+                      height: '50px',
+                    }
+                  : {
+                      bottom: '10px',
+                      right: '10px',
+                      width: '40px',
+                      height: '40px',
+                    }
+                ),
+                borderRadius: '50%',
+                backgroundColor: '#f44336',
+                color: 'white',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                cursor: 'pointer',
+                zIndex: 1010,
+                fontSize: isMobile ? '24px' : '20px'
+              }} 
+              onClick={toggleChat}
+            >
+              ✕
+            </div>
           </div>
-        </div>
+        </>
       )}
     </Router>
   );
