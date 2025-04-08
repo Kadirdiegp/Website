@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+
+// Anpassungen für Production und lokale Entwicklung
+const isProd = window.location.hostname !== 'localhost';
 
 const ChatbotButton = styled.button`
   position: fixed;
@@ -68,6 +71,15 @@ const IframeContainer = styled.div`
 
 const ChatbotWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Force reload the iframe when opened on production
+    if (isOpen && isProd) {
+      setLoading(true);
+      setTimeout(() => setLoading(false), 300);
+    }
+  }, [isOpen]);
 
   const toggleChatbot = () => {
     setIsOpen(!isOpen);
@@ -76,7 +88,8 @@ const ChatbotWidget: React.FC = () => {
   // ChatBot-URL je nach Umgebung anpassen
   const getChatbotUrl = () => {
     // Wir verwenden die HTTPS-Variante um Mixed-Content-Probleme zu vermeiden
-    return 'https://kinderschutz-bot.windsurf.build/?embedded=true&transparent=true&noFrame=true';
+    // Cache-Busting Parameter hinzufügen
+    return `https://kinderschutz-bot.windsurf.build/?embedded=true&transparent=true&noFrame=true&t=${Date.now()}`;
   };
 
   return (
@@ -96,7 +109,7 @@ const ChatbotWidget: React.FC = () => {
       )}
       
       <ChatbotWrapper $isOpen={isOpen}>
-        {isOpen && (
+        {isOpen && !loading && (
           <IframeContainer>
             <iframe 
               src={getChatbotUrl()}
